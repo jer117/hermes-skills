@@ -1,0 +1,18 @@
+{
+  "name": "hermes-skills",
+  "owner": {
+    "name": "jer117"
+  },
+  "description": "Agent skills for reviewing GitHub pull requests",
+  "plugins": [
+    {
+      "name": "pr-review",
+      "description": "Review a GitHub PR with gh and post inline findings. Never approves, commits, or pushes.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/pr-review"
+      ]
+    }
+  ]
+}

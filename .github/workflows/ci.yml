@@ -1,0 +1,44 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # ubuntu-latest moves to 26.04, which has no Python 3.9 builds.
+          - os: ubuntu-24.04
+            python: "3.9"
+          - os: ubuntu-latest
+            python: "3.13"
+          - os: macos-latest
+            python: "3.13"
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m unittest discover -s tests -v
+
+  hermes-scan:
+    runs-on: ubuntu-latest
+    env:
+      # Hermes Agent commit whose install scanner the skills are checked against.
+      HERMES_REF: 8bff64d6ed3414a66976bfa8ab72c14b6bca2a6f
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch Hermes's skills_guard.py
+        run: curl -fsSL -o "$RUNNER_TEMP/skills_guard.py" "https://raw.githubusercontent.com/NousResearch/hermes-agent/$HERMES_REF/tools/skills_guard.py"
+      - name: Scan skills as a community install
+        run: python tools/hermes_scan.py "$RUNNER_TEMP/skills_guard.py" skills/*/

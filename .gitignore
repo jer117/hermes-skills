@@ -1,0 +1,9 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+# local test installs from `npx skills add ./` (prefer `npx skills add ./ --list`)
+.agents/
+.claude/skills/
+.hermes/skills/
+skills-lock.json
+*.skill
